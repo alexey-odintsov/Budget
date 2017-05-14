@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.alekso.budget.R;
+import com.alekso.budget.ui.accounts.AccountsFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -42,6 +43,14 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        AccountsFragment accountsFragment;
+        accountsFragment = (AccountsFragment) getSupportFragmentManager().findFragmentByTag(AccountsFragment.TAG);
+        if (accountsFragment == null) {
+            accountsFragment = AccountsFragment.newInstance();
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, accountsFragment, AccountsFragment.TAG).commit();
+
     }
 
     @Override

@@ -29,7 +29,7 @@ import java.util.List;
 public class AccountsFragment extends Fragment implements AccountsContract.View,
         LoaderManager.LoaderCallbacks<Cursor> {
     private static final boolean DEBUG = true;
-    private static final String TAG = App.fullTag(AccountsFragment.class.getSimpleName());
+    public static final String TAG = App.fullTag(AccountsFragment.class.getSimpleName());
 
     private static final int LOADER_GET_ACCOUNTS = 1;
 
