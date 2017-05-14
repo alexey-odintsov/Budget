@@ -15,7 +15,7 @@ import java.util.List;
  */
 
 public class AccountsPresenter implements AccountsContract.Presenter {
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private static final String TAG = App.fullTag(AccountsPresenter.class.getSimpleName());
 
     private final Repository mRepository;
@@ -38,7 +38,7 @@ public class AccountsPresenter implements AccountsContract.Presenter {
 
     @Override
     public void onGetAccounts(Cursor accountsCursor) {
-        if (DEBUG) Log.d(TAG, "onGetFavoriteMovies(data: " + accountsCursor + ")");
+        if (DEBUG) Log.d(TAG, "onGetAccounts(data: " + accountsCursor + ")");
 
         List<Account> accounts = AccountsReader.fromCursor(accountsCursor);
         mView.showAccounts(accounts);

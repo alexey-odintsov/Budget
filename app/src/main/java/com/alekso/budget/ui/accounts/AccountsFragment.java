@@ -18,7 +18,10 @@ import com.alekso.budget.App;
 import com.alekso.budget.R;
 import com.alekso.budget.databinding.FragmentAccountsBinding;
 import com.alekso.budget.model.Account;
+import com.alekso.budget.source.Repository;
 import com.alekso.budget.source.local.DbContract;
+import com.alekso.budget.source.local.LocalDataSourceImpl;
+import com.alekso.budget.source.remote.RemoteDataSourceImpl;
 
 import java.util.List;
 
@@ -28,9 +31,8 @@ import java.util.List;
 
 public class AccountsFragment extends Fragment implements AccountsContract.View,
         LoaderManager.LoaderCallbacks<Cursor> {
-    private static final boolean DEBUG = true;
     public static final String TAG = App.fullTag(AccountsFragment.class.getSimpleName());
-
+    private static final boolean DEBUG = true;
     private static final int LOADER_GET_ACCOUNTS = 1;
 
     private FragmentAccountsBinding mViewBinding;
@@ -59,12 +61,18 @@ public class AccountsFragment extends Fragment implements AccountsContract.View,
         super.onCreate(savedInstanceState);
         mAdapter = new AccountsAdapter(new AccountsAdapter.ItemClickHandler() {
             @Override
-            public void onClick(long movieId) {
-                //mPresenter.movieClick(movieId);
+            public void onClick(long id) {
+                if (DEBUG) Log.d(TAG, "account #" + id + " has clicked");
             }
         });
 
-        setHasOptionsMenu(true);
+        mPresenter = new AccountsPresenter(
+                Repository.getInstance(
+                        LocalDataSourceImpl.getInstance(getActivity().getContentResolver()),
+                        RemoteDataSourceImpl.getInstance(getContext())
+                ), this);
+
+//        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -86,6 +94,8 @@ public class AccountsFragment extends Fragment implements AccountsContract.View,
 
         mViewBinding.rvAccounts.setLayoutManager(new GridLayoutManager(getContext(), 2));
         mViewBinding.rvAccounts.setAdapter(mAdapter);
+
+        mPresenter.start();
     }
 
     @Override
@@ -100,7 +110,7 @@ public class AccountsFragment extends Fragment implements AccountsContract.View,
 
     @Override
     public void showAccounts(List<Account> items) {
-
+        mAdapter.setData(items);
     }
 
     @Override

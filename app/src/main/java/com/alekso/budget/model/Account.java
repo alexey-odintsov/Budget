@@ -6,27 +6,36 @@ package com.alekso.budget.model;
 
 public class Account {
     private long mId;
+    private long mCurrencyId;
     private String mName;
     private int mType;
 
     /**
+     * Initialization constructor
+     *
      * @param id
+     * @param currencyId
      * @param name
      * @param type
      */
-    public Account(long id, String name, int type) {
+    public Account(long id, long currencyId, String name, int type) {
         setId(id);
+        setCurrencyId(currencyId);
         setName(name);
-        setTyoe(type);
+        setType(type);
     }
 
     /**
+     * New instance constructor
+     *
+     * @param currencyId
      * @param name
      * @param type
      */
-    public Account(String name, int type) {
+    public Account(long currencyId, String name, int type) {
+        setCurrencyId(currencyId);
         setName(name);
-        setTyoe(type);
+        setType(type);
     }
 
     public long getId() {
@@ -45,17 +54,25 @@ public class Account {
         mName = name;
     }
 
-    public void setTyoe(int type) {
-        mType = type;
-    }
-
     public int getType() {
         return mType;
     }
 
+    public void setType(int type) {
+        mType = type;
+    }
+
+    public long getCurrencyId() {
+        return mCurrencyId;
+    }
+
+    public void setCurrencyId(long currencyId) {
+        mCurrencyId = currencyId;
+    }
+
     @Override
     public String toString() {
-        return String.format("Account { id: %d; type: %d; name: %s }", mId, mType, mName);
+        return String.format("Account { id: %d; currency: %d; type: %d; name: %s }", mId, mCurrencyId, mType, mName);
     }
 
 
