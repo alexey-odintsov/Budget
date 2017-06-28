@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import com.alekso.budget.R;
 import com.alekso.budget.ui.accounts.AccountsFragment;
+import com.alekso.budget.ui.review.ReviewFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -44,12 +45,12 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        AccountsFragment accountsFragment;
-        accountsFragment = (AccountsFragment) getSupportFragmentManager().findFragmentByTag(AccountsFragment.TAG);
-        if (accountsFragment == null) {
-            accountsFragment = AccountsFragment.newInstance();
+        ReviewFragment fragment;
+        fragment = (ReviewFragment) getSupportFragmentManager().findFragmentByTag(ReviewFragment.TAG);
+        if (fragment == null) {
+            fragment = ReviewFragment.newInstance();
         }
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, accountsFragment, AccountsFragment.TAG).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, fragment, ReviewFragment.TAG).commit();
 
     }
 
@@ -91,13 +92,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_timeline) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_accounts) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_planning) {
+
+        } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_share) {
 
