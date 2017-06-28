@@ -92,10 +92,10 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_timeline) {
-
+        if (id == R.id.nav_review) {
+            showReviewFragment();
         } else if (id == R.id.nav_accounts) {
-
+            showAccountsFragment();
         } else if (id == R.id.nav_planning) {
 
         } else if (id == R.id.nav_settings) {
@@ -109,5 +109,22 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showAccountsFragment() {
+        AccountsFragment fragment = (AccountsFragment) getSupportFragmentManager().findFragmentByTag(AccountsFragment.TAG);
+        if (fragment == null) {
+            fragment = AccountsFragment.newInstance();
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, fragment, AccountsFragment.TAG).commit();
+    }
+
+    private void showReviewFragment() {
+        ReviewFragment fragment = (ReviewFragment) getSupportFragmentManager().findFragmentByTag(ReviewFragment.TAG);
+        if (fragment == null) {
+            fragment = ReviewFragment.newInstance();
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, fragment, ReviewFragment.TAG).commit();
+
     }
 }

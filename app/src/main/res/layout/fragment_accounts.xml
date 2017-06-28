@@ -21,10 +21,14 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_accounts"
-            android:layout_width="368dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/textView2"
-            tools:layout_editor_absoluteX="8dp" />
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
 </layout>
