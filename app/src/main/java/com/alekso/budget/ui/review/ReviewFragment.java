@@ -121,7 +121,7 @@ public class ReviewFragment extends Fragment implements ReviewContract.View,
             case LOADER_GET_ACCOUNTS:
                 Log.d(TAG, "uri: " + DbContract.AccountEntry.CONTENT_URI);
                 return new CursorLoader(getContext(),
-                        DbContract.AccountEntry.CONTENT_URI,
+                        DbContract.REVIEW_ACCOUNTS_CONTENT_URI,
                         null,
                         null,
                         null,

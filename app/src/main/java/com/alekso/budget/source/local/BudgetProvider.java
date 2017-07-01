@@ -6,12 +6,17 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteQuery;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.alekso.budget.App;
+import com.alekso.budget.model.Transaction;
+
+import static com.alekso.budget.source.local.DbContract.*;
 
 /**
  * Created by alekso on 09/05/2017.
@@ -30,6 +35,8 @@ public class BudgetProvider extends ContentProvider {
     private static final int TRANSACTIONS = 400;
     private static final int TRANSACTIONS_ITEM = 401;
 
+    private static final int REVIEW_ACCOUNTS = 110;
+
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     /**
      * Database helper
@@ -38,16 +45,18 @@ public class BudgetProvider extends ContentProvider {
 
     private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String authority = DbContract.CONTENT_AUTHORITY;
+        final String authority = CONTENT_AUTHORITY;
 
-        matcher.addURI(authority, DbContract.PATH_ACCOUNTS, ACCOUNTS);
-        matcher.addURI(authority, DbContract.PATH_ACCOUNTS + "/*", ACCOUNTS_ITEM);
-        matcher.addURI(authority, DbContract.PATH_CATEGORIES, CATEGORIES);
-        matcher.addURI(authority, DbContract.PATH_CATEGORIES + "/*", CATEGORIES_ITEM);
-        matcher.addURI(authority, DbContract.PATH_CURRENCIES, CURRENCIES);
-        matcher.addURI(authority, DbContract.PATH_CURRENCIES + "/*", CURRENCIES_ITEM);
-        matcher.addURI(authority, DbContract.PATH_TRANSACTIONS, TRANSACTIONS);
-        matcher.addURI(authority, DbContract.PATH_TRANSACTIONS + "/*", TRANSACTIONS_ITEM);
+        matcher.addURI(authority, PATH_ACCOUNTS, ACCOUNTS);
+        matcher.addURI(authority, PATH_ACCOUNTS + "/*", ACCOUNTS_ITEM);
+        matcher.addURI(authority, PATH_CATEGORIES, CATEGORIES);
+        matcher.addURI(authority, PATH_CATEGORIES + "/*", CATEGORIES_ITEM);
+        matcher.addURI(authority, PATH_CURRENCIES, CURRENCIES);
+        matcher.addURI(authority, PATH_CURRENCIES + "/*", CURRENCIES_ITEM);
+        matcher.addURI(authority, PATH_TRANSACTIONS, TRANSACTIONS);
+        matcher.addURI(authority, PATH_TRANSACTIONS + "/*", TRANSACTIONS_ITEM);
+
+        matcher.addURI(authority, PATH_REVIEW_ACCOUNTS, REVIEW_ACCOUNTS);
 
         return matcher;
     }
@@ -71,7 +80,7 @@ public class BudgetProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             case ACCOUNTS:
                 c = mDbHelper.getReadableDatabase().query(
-                        DbContract.AccountEntry.TABLE,
+                        AccountEntry.TABLE,
                         projection,
                         selection,
                         selectionArgs,
@@ -84,15 +93,40 @@ public class BudgetProvider extends ContentProvider {
             case ACCOUNTS_ITEM:
                 String[] where = {uri.getLastPathSegment()};
                 c = mDbHelper.getReadableDatabase().query(
-                        DbContract.AccountEntry.TABLE,
+                        AccountEntry.TABLE,
                         projection,
-                        DbContract.AccountEntry._ID + " = ? ",
+                        AccountEntry._ID + " = ? ",
                         where,
                         null,
                         null,
                         sortOrder
                 );
                 break;
+
+            case REVIEW_ACCOUNTS:
+                SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+                projection = new String[]{
+                        AccountEntry.TABLE + "." + AccountEntry._ID,
+                        AccountEntry.C_CURRENCY_ID,
+                        AccountEntry.C_NAME,
+                        AccountEntry.TABLE + "." + AccountEntry.C_TYPE,
+                        TransactionEntry.C_BALANCE
+                };
+
+                queryBuilder.setTables(
+                        AccountEntry.TABLE + " LEFT JOIN " +
+                                TransactionEntry.TABLE + " AS t ON (" +
+                                AccountEntry.TABLE + "." + AccountEntry._ID + " = " + TransactionEntry.C_ACCOUNT_ID + ")");
+                c = queryBuilder.query(mDbHelper.getReadableDatabase(),
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+
 
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -109,21 +143,23 @@ public class BudgetProvider extends ContentProvider {
 
         switch (match) {
             case ACCOUNTS:
-                return DbContract.AccountEntry.CONTENT_TYPE;
+                return AccountEntry.CONTENT_TYPE;
             case ACCOUNTS_ITEM:
-                return DbContract.AccountEntry.CONTENT_ITEM_TYPE;
+                return AccountEntry.CONTENT_ITEM_TYPE;
             case CATEGORIES:
-                return DbContract.CategoryEntry.CONTENT_TYPE;
+                return CategoryEntry.CONTENT_TYPE;
             case CATEGORIES_ITEM:
-                return DbContract.CategoryEntry.CONTENT_ITEM_TYPE;
+                return CategoryEntry.CONTENT_ITEM_TYPE;
             case CURRENCIES:
-                return DbContract.CurrencyEntry.CONTENT_TYPE;
+                return CurrencyEntry.CONTENT_TYPE;
             case CURRENCIES_ITEM:
-                return DbContract.CurrencyEntry.CONTENT_ITEM_TYPE;
+                return CurrencyEntry.CONTENT_ITEM_TYPE;
             case TRANSACTIONS:
-                return DbContract.TransactionEntry.CONTENT_TYPE;
+                return TransactionEntry.CONTENT_TYPE;
             case TRANSACTIONS_ITEM:
-                return DbContract.TransactionEntry.CONTENT_ITEM_TYPE;
+                return TransactionEntry.CONTENT_ITEM_TYPE;
+            case REVIEW_ACCOUNTS:
+                return REVIEW_ACCOUNTS_CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -141,12 +177,12 @@ public class BudgetProvider extends ContentProvider {
         switch (match) {
             case CATEGORIES:
                 long id = db.insert(
-                        DbContract.CategoryEntry.TABLE,
+                        CategoryEntry.TABLE,
                         null,
                         values
                 );
                 if (id > 0) {
-                    returnUri = DbContract.CategoryEntry.buildUri(id);
+                    returnUri = CategoryEntry.buildUri(id);
                 } else {
                     throw new SQLiteException("Failed to insert row for " + uri);
                 }
@@ -167,7 +203,7 @@ public class BudgetProvider extends ContentProvider {
 
         switch (match) {
             case CATEGORIES:
-                rowsDeleted = db.delete(DbContract.CategoryEntry.TABLE, selection, selectionArgs);
+                rowsDeleted = db.delete(CategoryEntry.TABLE, selection, selectionArgs);
                 break;
 
             default:
@@ -189,7 +225,7 @@ public class BudgetProvider extends ContentProvider {
 
         switch (match) {
             case CATEGORIES:
-                rowsUpdated = db.update(DbContract.CategoryEntry.TABLE, values, selection, selectionArgs);
+                rowsUpdated = db.update(CategoryEntry.TABLE, values, selection, selectionArgs);
                 break;
 
             default:

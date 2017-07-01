@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.alekso.budget.App;
 import com.alekso.budget.model.Account;
-import com.alekso.budget.model.AccountsReader;
 import com.alekso.budget.source.local.DbContract;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ public class ReviewAccountsReader {
                     c.getDouble(c.getColumnIndex(DbContract.TransactionEntry.C_BALANCE)));
 
             accounts.add(reviewAccount);
-            Log.d(TAG, "account parsed: " + account);
+            Log.d(TAG, "review account parsed: " + account);
         }
         c.close();
 

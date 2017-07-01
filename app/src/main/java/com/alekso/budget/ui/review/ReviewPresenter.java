@@ -4,8 +4,6 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.alekso.budget.App;
-import com.alekso.budget.model.Account;
-import com.alekso.budget.model.AccountsReader;
 import com.alekso.budget.model.decorators.ReviewAccount;
 import com.alekso.budget.model.decorators.ReviewAccountsReader;
 import com.alekso.budget.source.Repository;
