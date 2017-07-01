@@ -4,7 +4,13 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.alekso.budget.App;
+import com.alekso.budget.model.Account;
+import com.alekso.budget.model.AccountsReader;
+import com.alekso.budget.model.decorators.ReviewAccount;
+import com.alekso.budget.model.decorators.ReviewAccountsReader;
 import com.alekso.budget.source.Repository;
+
+import java.util.List;
 
 /**
  * Created by alekso on 27/06/2017.
@@ -29,11 +35,14 @@ public class ReviewPresenter implements ReviewContract.Presenter {
     public void start() {
         if (DEBUG) Log.d(TAG, "start()");
 
-        //mView.createAccountsLoader();
+        mView.createLoaders();
     }
 
     @Override
     public void onGetAccounts(Cursor accountsCursor) {
+        if (DEBUG) Log.d(TAG, "onGetAccounts(data: " + accountsCursor + ")");
 
+        List<ReviewAccount> accounts = ReviewAccountsReader.fromCursor(accountsCursor);
+        mView.showAccounts(accounts);
     }
 }

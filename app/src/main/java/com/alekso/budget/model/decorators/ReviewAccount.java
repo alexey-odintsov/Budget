@@ -20,4 +20,17 @@ public class ReviewAccount {
      * Image to represent the account
      */
     private int mImageResource;
+
+    public ReviewAccount(Account account, double balance) {
+        mAccount = account;
+        mBalance = balance;
+    }
+
+    public Account getAccount() {
+        return mAccount;
+    }
+
+    public double getBalance() {
+        return mBalance;
+    }
 }

@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.GridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +17,11 @@ import android.view.ViewGroup;
 import com.alekso.budget.App;
 import com.alekso.budget.R;
 import com.alekso.budget.databinding.FragmentReviewBinding;
-import com.alekso.budget.model.Account;
+import com.alekso.budget.model.decorators.ReviewAccount;
 import com.alekso.budget.source.Repository;
+import com.alekso.budget.source.local.DbContract;
 import com.alekso.budget.source.local.LocalDataSourceImpl;
 import com.alekso.budget.source.remote.RemoteDataSourceImpl;
-import com.alekso.budget.ui.accounts.AccountsPresenter;
 
 import java.util.List;
 
@@ -36,6 +38,7 @@ public class ReviewFragment extends Fragment implements ReviewContract.View,
 
     private FragmentReviewBinding mViewBinding;
     private ReviewContract.Presenter mPresenter;
+    private ReviewAccountsAdapter mAdapter;
 
     /**
      * Default constructor
@@ -56,6 +59,13 @@ public class ReviewFragment extends Fragment implements ReviewContract.View,
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mAdapter = new ReviewAccountsAdapter(new ReviewAccountsAdapter.ItemClickHandler() {
+            @Override
+            public void onClick(long id) {
+                if (DEBUG) Log.d(TAG, "account #" + id + " has clicked");
+            }
+        });
+
         mPresenter = new ReviewPresenter(
                 Repository.getInstance(
                         LocalDataSourceImpl.getInstance(getActivity().getContentResolver()),
@@ -71,8 +81,18 @@ public class ReviewFragment extends Fragment implements ReviewContract.View,
     }
 
     @Override
-    public void setPresenter(ReviewContract.Presenter presenter) {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
+        mViewBinding.rvAccounts.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        mViewBinding.rvAccounts.setAdapter(mAdapter);
+
+        mPresenter.start();
+    }
+
+    @Override
+    public void setPresenter(ReviewContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 
     @Override
@@ -81,23 +101,46 @@ public class ReviewFragment extends Fragment implements ReviewContract.View,
     }
 
     @Override
-    public void showAccounts(List<Account> items) {
-
+    public void showAccounts(List<ReviewAccount> items) {
+        mAdapter.setData(items);
     }
 
     @Override
     public void createLoaders() {
-
+        if (getLoaderManager().getLoader(LOADER_GET_ACCOUNTS) == null) {
+            getLoaderManager().initLoader(LOADER_GET_ACCOUNTS, null, this);
+        } else {
+            getLoaderManager().restartLoader(LOADER_GET_ACCOUNTS, null, this);
+        }
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+        if (DEBUG) Log.d(TAG, "onCreateLoader(id: " + id + "; args: " + args + ")");
+        switch (id) {
+            case LOADER_GET_ACCOUNTS:
+                Log.d(TAG, "uri: " + DbContract.AccountEntry.CONTENT_URI);
+                return new CursorLoader(getContext(),
+                        DbContract.AccountEntry.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        null);
+            default:
+                return null;
+        }
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (DEBUG) Log.d(TAG, "onLoadFinished(loader: " + loader + "; cursor: " + data + ")");
+        switch (loader.getId()) {
+            case LOADER_GET_ACCOUNTS:
+                mPresenter.onGetAccounts(data);
+                break;
 
+            default:
+        }
     }
 
     @Override

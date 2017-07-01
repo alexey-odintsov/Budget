@@ -2,7 +2,7 @@ package com.alekso.budget.ui.review;
 
 import android.database.Cursor;
 
-import com.alekso.budget.model.Account;
+import com.alekso.budget.model.decorators.ReviewAccount;
 import com.alekso.budget.ui.BasePresenter;
 import com.alekso.budget.ui.BaseView;
 
@@ -37,7 +37,7 @@ public interface ReviewContract {
          *
          * @param items
          */
-        void showAccounts(List<Account> items);
+        void showAccounts(List<ReviewAccount> items);
 
         /**
          * Initializes loader to get accounts list
