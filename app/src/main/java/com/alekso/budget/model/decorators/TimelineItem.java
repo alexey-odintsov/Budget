@@ -8,4 +8,8 @@ import com.alekso.budget.model.Transaction;
 
 public class TimelineItem {
     private Transaction mTransaction;
+
+    public Transaction getTransaction() {
+        return mTransaction;
+    }
 }

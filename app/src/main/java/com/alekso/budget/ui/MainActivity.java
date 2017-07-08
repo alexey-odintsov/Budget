@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import com.alekso.budget.R;
 import com.alekso.budget.ui.accounts.AccountsFragment;
 import com.alekso.budget.ui.review.ReviewFragment;
+import com.alekso.budget.ui.timeline.TimelineFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -96,6 +97,8 @@ public class MainActivity extends AppCompatActivity
             showReviewFragment();
         } else if (id == R.id.nav_accounts) {
             showAccountsFragment();
+        } else if (id == R.id.nav_timeline) {
+            showTimelineFragment();
         } else if (id == R.id.nav_planning) {
 
         } else if (id == R.id.nav_settings) {
@@ -125,6 +128,15 @@ public class MainActivity extends AppCompatActivity
             fragment = ReviewFragment.newInstance();
         }
         getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, fragment, ReviewFragment.TAG).commit();
+
+    }
+
+    private void showTimelineFragment() {
+        TimelineFragment fragment = (TimelineFragment) getSupportFragmentManager().findFragmentByTag(TimelineFragment.TAG);
+        if (fragment == null) {
+            fragment = TimelineFragment.newInstance();
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, fragment, TimelineFragment.TAG).commit();
 
     }
 }
