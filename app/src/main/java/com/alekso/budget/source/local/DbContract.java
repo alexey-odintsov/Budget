@@ -23,6 +23,9 @@ public class DbContract {
     public static final Uri REVIEW_ACCOUNTS_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_REVIEW_ACCOUNTS).build();
     public static final String REVIEW_ACCOUNTS_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_REVIEW_ACCOUNTS;
 
+    public static final String PATH_TIMELINE = "timeline";
+    public static final Uri TIMELINE_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TIMELINE).build();
+    public static final String TIMELINE_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TIMELINE;
 
     /**
      *

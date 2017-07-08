@@ -23,9 +23,9 @@ import static com.alekso.budget.source.local.DbContract.*;
  */
 
 public class BudgetProvider extends ContentProvider {
+    public static final int TIMELINE = 120;
     private static final boolean DEBUG = true;
     private static final String TAG = App.fullTag(BudgetProvider.class.getSimpleName());
-
     private static final int ACCOUNTS = 100;
     private static final int ACCOUNTS_ITEM = 101;
     private static final int CATEGORIES = 200;
@@ -34,9 +34,7 @@ public class BudgetProvider extends ContentProvider {
     private static final int CURRENCIES_ITEM = 301;
     private static final int TRANSACTIONS = 400;
     private static final int TRANSACTIONS_ITEM = 401;
-
     private static final int REVIEW_ACCOUNTS = 110;
-
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     /**
      * Database helper
@@ -57,6 +55,7 @@ public class BudgetProvider extends ContentProvider {
         matcher.addURI(authority, PATH_TRANSACTIONS + "/*", TRANSACTIONS_ITEM);
 
         matcher.addURI(authority, PATH_REVIEW_ACCOUNTS, REVIEW_ACCOUNTS);
+        matcher.addURI(authority, PATH_TIMELINE, TIMELINE);
 
         return matcher;
     }
@@ -76,6 +75,7 @@ public class BudgetProvider extends ContentProvider {
             Log.d(TAG, "query(uri: " + uri + "; selection: " + selection + "; selectionArgs: " + selectionArgs + ")");
 
         Cursor c;
+        SQLiteQueryBuilder queryBuilder;
 
         switch (sUriMatcher.match(uri)) {
             case ACCOUNTS:
@@ -104,7 +104,7 @@ public class BudgetProvider extends ContentProvider {
                 break;
 
             case REVIEW_ACCOUNTS:
-                SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+                queryBuilder = new SQLiteQueryBuilder();
                 projection = new String[]{
                         AccountEntry.TABLE + "." + AccountEntry._ID,
                         AccountEntry.C_CURRENCY_ID,
@@ -117,6 +117,38 @@ public class BudgetProvider extends ContentProvider {
                         AccountEntry.TABLE + " LEFT JOIN " +
                                 TransactionEntry.TABLE + " AS t ON (" +
                                 AccountEntry.TABLE + "." + AccountEntry._ID + " = " + TransactionEntry.C_ACCOUNT_ID + ")");
+                c = queryBuilder.query(mDbHelper.getReadableDatabase(),
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+
+            case TIMELINE:
+                queryBuilder = new SQLiteQueryBuilder();
+                projection = new String[]{
+                        TransactionEntry.TABLE + "." + TransactionEntry._ID,
+                        TransactionEntry.C_ACCOUNT_ID,
+                        TransactionEntry.C_CATEGORY_ID,
+                        TransactionEntry.C_DATETIME,
+                        TransactionEntry.C_AMOUNT,
+                        TransactionEntry.C_BALANCE,
+                        TransactionEntry.C_COMMENT,
+                        TransactionEntry.C_IS_VITAL,
+                        TransactionEntry.C_TYPE,
+                        TransactionEntry.C_STATUS,
+//                        AccountEntry.TABLE + "." + AccountEntry.C_TYPE,
+                };
+
+                queryBuilder.setTables(
+                        TransactionEntry.TABLE
+//                                + " LEFT JOIN " +
+//                                TransactionEntry.TABLE + " AS t ON (" +
+//                                AccountEntry.TABLE + "." + AccountEntry._ID + " = " + TransactionEntry.C_ACCOUNT_ID + ")"
+                );
                 c = queryBuilder.query(mDbHelper.getReadableDatabase(),
                         projection,
                         selection,
@@ -160,6 +192,8 @@ public class BudgetProvider extends ContentProvider {
                 return TransactionEntry.CONTENT_ITEM_TYPE;
             case REVIEW_ACCOUNTS:
                 return REVIEW_ACCOUNTS_CONTENT_TYPE;
+            case TIMELINE:
+                return TIMELINE_CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

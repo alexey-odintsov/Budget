@@ -38,6 +38,19 @@ public class Transaction {
     public Transaction() {
     }
 
+    public Transaction(Builder builder) {
+        setId(builder.id);
+        setAccountId(builder.accountId);
+        setCategoryId(builder.categoryId);
+        setAmount(builder.amount);
+        setBalance(builder.balance);
+        setComment(builder.comment);
+        setDateTime(builder.dateTime);
+        setIsVital(builder.isVital);
+        setStatus(builder.status);
+        setType(builder.type);
+    }
+
     public long getId() {
         return mId;
     }
@@ -70,6 +83,10 @@ public class Transaction {
         mAccountId = accountId;
     }
 
+    public long getCategoryId() {
+        return mCategoryId;
+    }
+
     public void setCategoryId(long categoryId) {
         mCategoryId = categoryId;
     }
@@ -80,6 +97,10 @@ public class Transaction {
 
     public void setAmount(double amount) {
         mAmount = amount;
+    }
+
+    public double getBalance() {
+        return mBalance;
     }
 
     public void setBalance(double balance) {
@@ -114,5 +135,72 @@ public class Transaction {
         return String.format("{ id: %d; dt: %d; type: %d; accountId: %d; categoryId: %d; amount:" +
                         " %.2f; balance: %.2f; status: %d; isVital: %b; comment: %s }", mId, mDateTime,
                 mType, mAccountId, mCategoryId, mAmount, mBalance, mStatus, mIsVital, mComment);
+    }
+
+    public static class Builder {
+        private long id;
+        private long dateTime;
+        private int type;
+        private long accountId;
+        private long categoryId;
+        private double amount;
+        private double balance;
+        private int status;
+        private String comment;
+        private boolean isVital;
+
+        public Builder id(long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder dateTime(long dt) {
+            this.dateTime = dt;
+            return this;
+        }
+
+        public Builder type(int type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder accountId(long accountId) {
+            this.accountId = accountId;
+            return this;
+        }
+
+        public Builder categoryId(long categoryId) {
+            this.categoryId = categoryId;
+            return this;
+        }
+
+        public Builder amount(double amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public Builder balance(double balance) {
+            this.balance = balance;
+            return this;
+        }
+
+        public Builder status(int status) {
+            this.status = status;
+            return this;
+        }
+
+        public Builder comment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+
+        public Builder isVital(boolean isVital) {
+            this.isVital = isVital;
+            return this;
+        }
+
+        public Transaction build() {
+            return new Transaction(this);
+        }
     }
 }

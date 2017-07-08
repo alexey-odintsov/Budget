@@ -28,14 +28,18 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
     @Override
     public TimelineAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.item_account, parent, false);
+        View view = inflater.inflate(R.layout.item_timeline, parent, false);
         return new TimelineAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(TimelineAdapter.ViewHolder holder, int position) {
         TimelineItem item = mItemsList.get(position);
-        holder.mTextViewId.setText(item.getTransaction().getId() + "");
+        holder.mTextViewId.setText(String.valueOf(item.getTransaction().getId()));
+        holder.mTextViewAccount.setText(String.valueOf(item.getTransaction().getAccountId()));
+        holder.mTextViewCategory.setText(String.valueOf(item.getTransaction().getCategoryId()));
+        holder.mTextViewAmount.setText(String.valueOf(item.getTransaction().getAmount()));
+        holder.mTextViewBalance.setText(String.valueOf(item.getTransaction().getBalance()));
     }
 
     @Override
@@ -65,10 +69,18 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
      */
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView mTextViewId;
+        TextView mTextViewAccount;
+        TextView mTextViewCategory;
+        TextView mTextViewAmount;
+        TextView mTextViewBalance;
 
         ViewHolder(View view) {
             super(view);
             mTextViewId = (TextView) view.findViewById(R.id.tv_id);
+            mTextViewAccount = (TextView) view.findViewById(R.id.tv_account);
+            mTextViewCategory = (TextView) view.findViewById(R.id.tv_category);
+            mTextViewAmount = (TextView) view.findViewById(R.id.tv_amount);
+            mTextViewBalance = (TextView) view.findViewById(R.id.tv_balance);
             view.setOnClickListener(this);
         }
 

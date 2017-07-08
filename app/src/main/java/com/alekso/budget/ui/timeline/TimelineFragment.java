@@ -20,6 +20,7 @@ import com.alekso.budget.R;
 import com.alekso.budget.databinding.FragmentTimelineBinding;
 import com.alekso.budget.model.decorators.TimelineItem;
 import com.alekso.budget.source.Repository;
+import com.alekso.budget.source.local.BudgetProvider;
 import com.alekso.budget.source.local.DbContract;
 import com.alekso.budget.source.local.LocalDataSourceImpl;
 import com.alekso.budget.source.remote.RemoteDataSourceImpl;
@@ -133,7 +134,7 @@ public class TimelineFragment extends Fragment implements TimelineContract.View,
             case LOADER_GET_ITEMS:
                 Log.d(TAG, "uri: " + DbContract.TransactionEntry.CONTENT_URI);
                 return new CursorLoader(getContext(),
-                        DbContract.AccountEntry.CONTENT_URI,
+                        DbContract.TIMELINE_CONTENT_URI,
                         null,
                         null,
                         null,

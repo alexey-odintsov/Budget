@@ -9,6 +9,8 @@ import android.util.Log;
 import com.alekso.budget.App;
 import com.alekso.budget.model.Account;
 
+import java.util.Date;
+
 import static com.alekso.budget.source.local.DbContract.AccountEntry;
 import static com.alekso.budget.source.local.DbContract.CategoryEntry;
 import static com.alekso.budget.source.local.DbContract.CurrencyEntry;
@@ -29,7 +31,7 @@ public class DbHelper extends SQLiteOpenHelper {
     /**
      * Database version
      */
-    private static final int DB_VERSION = 5;
+    private static final int DB_VERSION = 6;
 
     /**
      * SQL query to create Accounts table
@@ -146,6 +148,8 @@ public class DbHelper extends SQLiteOpenHelper {
         final String ACCOUNT_DEBIT_USD = "5";
         final String ACCOUNT_CREDIT_RUB = "6";
 
+        final String CATEGORY_FOOD = "1";
+
         // populate currency
         String[][] currencyData = {
                 {CURRENCY_RUB, "RUB", "р."},
@@ -178,6 +182,22 @@ public class DbHelper extends SQLiteOpenHelper {
             cv[i].put(AccountEntry.C_NAME, accountData[i][2]);
             cv[i].put(AccountEntry.C_CURRENCY_ID, accountData[i][3]);
             db.insert(AccountEntry.TABLE, null, cv[i]);
+        }
+
+        // populate transactions
+        String[][] transactionsData = {
+                {"1", ACCOUNT_CASH_RUB, CATEGORY_FOOD, String.valueOf(new Date().getTime()), "1000", "40000"},
+        };
+        cv = new ContentValues[transactionsData.length];
+        for (int i = 0; i < transactionsData.length; i++) {
+            cv[i] = new ContentValues();
+            cv[i].put(TransactionEntry._ID, transactionsData[i][0]);
+            cv[i].put(TransactionEntry.C_ACCOUNT_ID, transactionsData[i][1]);
+            cv[i].put(TransactionEntry.C_CATEGORY_ID, transactionsData[i][2]);
+            cv[i].put(TransactionEntry.C_DATETIME, transactionsData[i][3]);
+            cv[i].put(TransactionEntry.C_AMOUNT, transactionsData[i][4]);
+            cv[i].put(TransactionEntry.C_BALANCE, transactionsData[i][5]);
+            db.insert(TransactionEntry.TABLE, null, cv[i]);
         }
     }
 }
