@@ -138,16 +138,16 @@ public class BudgetProvider extends ContentProvider {
                         TransactionEntry.C_BALANCE,
                         TransactionEntry.C_COMMENT,
                         TransactionEntry.C_IS_VITAL,
-                        TransactionEntry.C_TYPE,
+                        TransactionEntry.TABLE + "." + TransactionEntry.C_TYPE,
                         TransactionEntry.C_STATUS,
-//                        AccountEntry.TABLE + "." + AccountEntry.C_TYPE,
+                        AccountEntry.TABLE + "." + AccountEntry.C_NAME,
                 };
 
                 queryBuilder.setTables(
                         TransactionEntry.TABLE
-//                                + " LEFT JOIN " +
-//                                TransactionEntry.TABLE + " AS t ON (" +
-//                                AccountEntry.TABLE + "." + AccountEntry._ID + " = " + TransactionEntry.C_ACCOUNT_ID + ")"
+                                + " LEFT JOIN " +
+                                AccountEntry.TABLE + " ON (" +
+                                AccountEntry.TABLE + "." + AccountEntry._ID + " = " + TransactionEntry.C_ACCOUNT_ID + ")"
                 );
                 c = queryBuilder.query(mDbHelper.getReadableDatabase(),
                         projection,

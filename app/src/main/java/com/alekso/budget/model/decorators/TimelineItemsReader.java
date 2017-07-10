@@ -42,6 +42,7 @@ public class TimelineItemsReader {
                     .build();
 
             TimelineItem item = new TimelineItem(transaction);
+            item.setAccountName(c.getString(c.getColumnIndex(DbContract.AccountEntry.C_NAME)));
 
             items.add(item);
             Log.d(TAG, "timeline item parsed: " + item);

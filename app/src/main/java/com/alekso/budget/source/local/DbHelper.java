@@ -31,7 +31,7 @@ public class DbHelper extends SQLiteOpenHelper {
     /**
      * Database version
      */
-    private static final int DB_VERSION = 6;
+    private static final int DB_VERSION = 7;
 
     /**
      * SQL query to create Accounts table

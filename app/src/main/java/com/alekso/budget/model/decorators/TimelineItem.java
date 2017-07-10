@@ -18,4 +18,12 @@ public class TimelineItem {
     public Transaction getTransaction() {
         return mTransaction;
     }
+
+    public String getAccountName() {
+        return mAccountName;
+    }
+
+    public void setAccountName(String name) {
+        mAccountName = name;
+    }
 }

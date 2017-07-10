@@ -9,7 +9,9 @@ import android.widget.TextView;
 import com.alekso.budget.R;
 import com.alekso.budget.model.decorators.TimelineItem;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,6 +19,8 @@ import java.util.List;
  */
 
 public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder> {
+
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yy H:mm:ss");
 
     private final TimelineAdapter.ItemClickHandler mItemClickHandler;
     private List<TimelineItem> mItemsList = new ArrayList<>();
@@ -35,11 +39,12 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
     @Override
     public void onBindViewHolder(TimelineAdapter.ViewHolder holder, int position) {
         TimelineItem item = mItemsList.get(position);
-        holder.mTextViewId.setText(String.valueOf(item.getTransaction().getId()));
-        holder.mTextViewAccount.setText(String.valueOf(item.getTransaction().getAccountId()));
+        holder.mTextViewId.setText("#" + String.valueOf(item.getTransaction().getId()));
+        holder.mTextViewAccount.setText(String.valueOf(item.getAccountName()));
         holder.mTextViewCategory.setText(String.valueOf(item.getTransaction().getCategoryId()));
         holder.mTextViewAmount.setText(String.valueOf(item.getTransaction().getAmount()));
         holder.mTextViewBalance.setText(String.valueOf(item.getTransaction().getBalance()));
+        holder.mTextViewDateTime.setText(dateFormat.format(new Date(item.getTransaction().getDateTime())));
     }
 
     @Override
@@ -73,6 +78,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         TextView mTextViewCategory;
         TextView mTextViewAmount;
         TextView mTextViewBalance;
+        TextView mTextViewDateTime;
 
         ViewHolder(View view) {
             super(view);
@@ -81,6 +87,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
             mTextViewCategory = (TextView) view.findViewById(R.id.tv_category);
             mTextViewAmount = (TextView) view.findViewById(R.id.tv_amount);
             mTextViewBalance = (TextView) view.findViewById(R.id.tv_balance);
+            mTextViewDateTime = (TextView) view.findViewById(R.id.tv_datetime);
             view.setOnClickListener(this);
         }
 
