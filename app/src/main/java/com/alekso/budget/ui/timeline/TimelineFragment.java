@@ -26,6 +26,7 @@ import com.alekso.budget.source.local.LocalDataSourceImpl;
 import com.alekso.budget.source.remote.RemoteDataSourceImpl;
 import com.alekso.budget.ui.accounts.AccountsAdapter;
 import com.alekso.budget.ui.accounts.AccountsPresenter;
+import com.alekso.budget.ui.dialogs.TransactionDialog;
 
 import java.util.List;
 
@@ -99,6 +100,14 @@ public class TimelineFragment extends Fragment implements TimelineContract.View,
 
         mViewBinding.rvItems.setLayoutManager(new LinearLayoutManager(getContext()));
         mViewBinding.rvItems.setAdapter(mAdapter);
+
+        mViewBinding.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TransactionDialog dialog = new TransactionDialog();
+                dialog.show(getFragmentManager(), TransactionDialog.TAG);
+            }
+        });
 
         mPresenter.start();
     }
