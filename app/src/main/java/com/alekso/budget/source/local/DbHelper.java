@@ -31,7 +31,7 @@ public class DbHelper extends SQLiteOpenHelper {
     /**
      * Database version
      */
-    private static final int DB_VERSION = 7;
+    private static final int DB_VERSION = 9;
 
     /**
      * SQL query to create Accounts table
@@ -89,6 +89,7 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         createTables(db);
+        insertPredefinedValues(db);
     }
 
     @Override
